@@ -63,7 +63,7 @@ get_row(){ #|$1 fid int
 sort_row(){ #$1 f file
 	awk '{i=index($0,"tar\">"); printf("%d,", substr($0,i+12,6)); print $0}' $1\
 		| sort -rn \
-		| awk -F ",|&#39;" '$1>3000 || NR<=15 {$1=""; sub("<a>", "<a href=\"https://t66y.com/" $3 "\">"); sub("70px", "80px"); print $0}'
+		| awk -F ",|&#39;" '$1>3333 || NR<=15 {$1=""; sub("<a>", "<a href=\"https://t66y.com/" $3 "\">"); sub("70px", "80px"); print $0}'
 		#sub(/onclick=\".*?\"/,"" );
 }
 
