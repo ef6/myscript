@@ -93,7 +93,7 @@ sendmail(){
 [ $1 ] && { $@; exit 0; }
 
 set_head > $RELEASE
-claws 25 2 26 4 >> $RELEASE
+claws 25 2 26 >> $RELEASE
 
 #claw 25 2 26 4
 #claw 5 15
