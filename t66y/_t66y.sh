@@ -2,6 +2,9 @@
 RELEASE=$(echo "$(dirname $(realpath $0))/release/t66y.html")
 WWW="/mnt/mmcblk0p4/www/t66y.html"
 
+domain="cl.3572y.xyz"
+URL="https://${domain}/"
+
 link_www(){
 	[ -e $RELEASE ] && ln -sf $RELEASE $WWW || echo "Not found htmlpage"
 }
@@ -23,12 +26,17 @@ set_cron(){
 	EOF
 }
 
+cssq(){
+	/mnt/sda1/bin/cascadia -q -i -o -c $@
+}
+
 set_head(){
     cat <<- EOF
 		<title>Run at $(date "+[%m/%d %H:%M]")</title>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-		<link rel='stylesheet' href='https://to.redircdn.com/web/mob_style.css' type='text/css' />
+		<link rel='stylesheet' href='https://2023.redircdn.com/web/mob_style.css' type='text/css' />
+		<link rel="stylesheet" href="https://2023.redircdn.com/web/t66y-icon.css" type="text/css" />
 		<style type="text/css">a:visited{color:red;}</style>
 	EOF
 }
@@ -36,12 +44,12 @@ set_head(){
 fid2title(){ #|$1 fid int
 	local args=$@; [ $1 ] || read -t 1 args
 	case $args in
-	  2 ) echo "步兵";;
-	  4 ) echo "欧美";;
-	  5 ) echo "动漫";;
-	  15) echo "骑兵";;
-	  25) echo "国产";;
-	  26) echo "中文";;
+	  2 ) echo "2步兵";;
+	  4 ) echo "4欧美";;
+	  5 ) echo "5动漫";;
+	  15) echo "15骑兵";;
+	  25) echo "25国产";;
+	  26) echo "26中文";;
 	   *) echo "case 2, 4, 5, 15, 25, 26"; exit 1;;
 	esac
 }
@@ -55,16 +63,39 @@ set_title(){ #|$1 title string
 
 get_row(){ #|$1 fid int
 	local args=$@; [ $1 ] || read -t 1 args
-	curl "https://t66y.com/thread0806.php?fid=${args}&page=[1-7]" -H 'user-agent: Mobile'  -H 'cookie: ismob=1' \
+	curl "${URL}thread0806.php?fid=${args}&page=[1-7]" -A 'Mobile' -b 'ismob=1' --retry 5 -m 20 \
 		| tr -d '\r\n' \
-		| /mnt/sda1/bin/cascadia -q -i -o -c '.t_one'
+		| cssq 'div.list[onclick]'
+# --resolve "${domain}:443:104.25.100.254"
 }
 
 sort_row(){ #$1 f file
+	while read line;do
+		let dl=`printf "%d" $(echo -e $line | /mnt/sda1/bin/xq -x '//i[@class="icon-dl"]/../text()') 2>/dev/null`
+		echo "$dl,$line"
+	done < $1 \
+		| sort -rn \
+		| awk -F "," '$1>3333 || NR<=15 {$1=""; print $0}' \
+		| sed 's#="htm#="'${URL}'htm#g'
+}
+
+x20230202_sort_row(){ #$1 f file
 	awk '{i=index($0,"tar\">"); printf("%d,", substr($0,i+12,6)); print $0}' $1\
 		| sort -rn \
-		| awk -F ",|&#39;" '$1>3333 || NR<=15 {$1=""; sub("<a>", "<a href=\"https://t66y.com/" $3 "\">"); sub("70px", "80px"); print $0}'
+		| awk -F ",|\"" -v URL=$URL '$1>3333 || NR<=15 {$1=""; sub($7, URL$7); sub("70px", "80px"); print $0}'
 		#sub(/onclick=\".*?\"/,"" );
+		#awk -F ",|\"" '{sub($6, "https://cl.6869y.xyz/"$6); print $0}'
+}
+
+x20230202_score(){
+	while read line;do
+#		let dld=`echo $line | cssq 'span[class=tar]' -t | awk '{printf("%d",$2)}'`
+#		[ $dld -gt 0 ] || continue
+		
+#let rpy=`echo $line | cssq 'span.tar.s6.hv' -t | awk '{printf("%d",$2)}'`
+echo $line | cssq 'span.tar' -t |xargs -n4 |awk '{printf("%d,",($2>0)?$4*100+$2:0)}'
+		echo $line
+	done
 }
 
 claw(){ #$1 fid int
@@ -75,7 +106,7 @@ claw(){ #$1 fid int
 claws(){ #$@ fids []int
 	for i in $@;do
 		claw $i;
-		sleep 10;
+		sleep 3;
 	done
 }
 
@@ -90,11 +121,19 @@ sendmail(){
      -file "$RELEASE" -inline
 }
 
+get_new(){
+	 curl https://www.gfaqvij.xyz |grep dn
+}
+
 [ $1 ] && { $@; exit 0; }
 
 set_head > $RELEASE
 claws 25 2 26 >> $RELEASE
 
+#cat ./tt.html | score
+
 #claw 25 2 26 4
 #claw 5 15
 #sendmail |logger -t "【t66y】"
+# cat tt.html |cssq 'span.tar.s6.hv' -t
+# cat tt.html |cssq 'span[class=tar]' -t |awk '{printf("%d",$2)}'

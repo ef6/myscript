@@ -7,6 +7,7 @@
 // @date         2022.01.18
 // @modified     2022.02.10
 // @version      1.2.0
+// @updateURL    https://cdn.jsdelivr.net/gh/ef6/myscript@main/yh/zrzyj.jiaozuo.user.js
 // @icon         http://zrzyj.jiaozuo.gov.cn/favicon.ico
 // @match        http*://jy.zrzyj.jiaozuo.gov.cn*/trade-engine/trade/resources*
 // @match        http*://jy.zrzyj.jiaozuo.gov.cn*/trade-engine/trade/collectiveresources*

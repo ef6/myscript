@@ -5,11 +5,12 @@
 // @namespace    https://ef6.github.io
 // @license      GPL3.0
 // @date         2022.01.18
-// @modified     2022.02.10
-// @version      1.0.6
+// @modified     2023.04.13
+// @version      1.0.7
+// @updateURL    https://cdn.jsdelivr.net/gh/ef6/myscript@main/yh/rmdown2magnet.user.js
 // @icon         https://rmdown.com/favicon.ico
-// @match        http*://t66y.com/htm_data/*.html
-// @match        http*://t66y.com/htm_mob/*.html
+// @include      http*://t66y.com/htm_data/*.html
+// @include      http*://t66y.com/htm_mob/*.html
 // @grant        none
 // @run-at       document-end
 // ==/UserScript==

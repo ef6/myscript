@@ -1,0 +1,79 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
+  <link rel='stylesheet' href='https://2023.redircdn.com/web/mob_style.css' type='text/css' />
+  <link rel="stylesheet" href="https://2023.redircdn.com/web/t66y-icon.css" type="text/css" />
+  <style type="text/css">a:visited{color:red;}</style>
+</head>
+
+<body>
+<script type="module">
+  import { createApp, reactive } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+  const YDAY = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const DBY = new Date(Date.now() - 24 * 60 * 60 * 1000 * 2);
+  function dateClass(dateString){
+    //let comDate = Date.parse(dateString);
+    let comDate = dateString * 1000;
+    if(comDate >= YDAY) return "newworks";
+    if(comDate >= DBY) return "ori"
+  }
+
+  createApp({
+    setup() {
+      const JsonData = reactive({
+        load_json : false, 
+        domain : '', 
+        list : []
+      })
+      
+      function loadJson(url) {
+        JsonData.load_json = false;
+        fetch(url).then(resp => resp.json())
+          .then(json => {
+            for (let i = 0; i < json['list'].length; i++){
+              json['list'][i]['date_class'] = dateClass(json['list'][i]['timestamp'])
+            }
+            JsonData.domain = json.domain;
+            JsonData.list = json.list;
+            JsonData.load_json = true;
+          });
+      }
+      
+      loadJson('./data.json');
+      
+      return {
+        JsonData
+      }
+    }
+  }).mount('#app')
+</script>
+
+<div id="app">
+  <h2 v-if="!JsonData.load_json">正在加载...</h2>
+  <template v-if="JsonData.load_json">
+    <div class="list t_one" onclick="oUrl(this)" v-for="item in JsonData.list">
+      <a :href="JsonData.domain + item.url">{{ item.title }}</a>
+      <br/>
+      <span class="f10 fl" :data-timestamp="item.timestamp">{{ item.time }} 
+        <span :class="item.date_class"> {{ item.au }} </span>
+      </span>
+      <span class="f10 fr">
+        <span class="" v-if="item.like">
+          <i class="icon-like"></i>{{ item.like }}
+        </span>
+        <span style="width:70px;display:inline-block;" class="tar">
+          <i class="icon-dl"></i>{{ item.dl }}
+        </span>
+        <span style="width:70px;display:inline-block;" class="tar s6 hv">
+          <i class="icon-comm"></i>{{ item.comm }}
+        </span>
+      </span>
+      <div class="c"></div>
+    </div>
+  </template>
+</div>
+
+<body>
+</html>
+

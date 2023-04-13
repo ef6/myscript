@@ -4,6 +4,7 @@ HOST=
 TOKEN=
 INI=$(echo "$(dirname $(realpath $0))/dynv6.ini")
 . $INI
+
 # *  *  *  *  *-- 星期中星期几 (0 - 6) (星期天 为0)
 # |  |  |  +----- 月份 (1 - 12) 
 # |  |  +-------- 一个月中的第几天 (1 - 31)
@@ -13,7 +14,7 @@ INI=$(echo "$(dirname $(realpath $0))/dynv6.ini")
 # */n 表示每 n 单位间隔执行 默认每 1 单位时间间隔执行
 # a-b 表示从 a到b 这段时间内每 1 单位时间间隔执行
 set_cron(){
-    local click="0 * * * *"
+    local click="*/20 * * * *"
     local args='| logger -t "[dynv6]"'
     crontab - <<- EOF
 		$(crontab -l | sed "/$(realpath $0 | sed 's/\//\\\//g')/d")
@@ -35,7 +36,7 @@ get_local_ip_force(){
 }
 
 get_remote_ip(){
-    nslookup -type=aaaa fxj-s.v6.army 8.8.8.8 | awk 'NR==6 {print $2}'
+    nslookup -type=aaaa fxj-s.v6.army 114.114.114.114 | awk 'NR==6 {print $2}'
 }
 
 update_ip(){

@@ -5,8 +5,9 @@
 // @namespace    https://ef6.github.io
 // @license      GPL3.0
 // @date         2022.02.21
-// @modified     2022.02.28
-// @version 0.1.0
+// @modified     2022.03.03
+// @version 0.1.1
+// @updateURL https://cdn.jsdelivr.net/gh/ef6/myscript@main/yh/douyin.user.js
 // @include https://www.douyin.com/recommend
 // @include https://www.douyin.com/
 // @include https://www.douyin.com/follow
@@ -16,10 +17,10 @@
 (function() {
 
 let css = `
-body, .oJArD0aS{
+ body, .oJArD0aS{
   min-width: 360px!important;
  }
-.mMOxHVzv{
+.mMOxHVzv, .qqDY_iJX{
   width: ${document.documentElement.clientWidth}px!important;
   padding: 4px!important;
  }
