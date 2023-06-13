@@ -9,7 +9,7 @@
 
 <body>
 <script type="module">
-  import { createApp, reactive } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+  import { createApp, reactive, computed } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
   const YDAY = new Date(Date.now() - 24 * 60 * 60 * 1000);
   const DBY = new Date(Date.now() - 24 * 60 * 60 * 1000 * 2);
   function dateClass(dateString){
@@ -22,12 +22,26 @@
   createApp({
     setup() {
       const JsonData = reactive({
+        fid : 25, 
         load_json : false, 
         domain : '', 
         list : []
       })
       
-      function loadJson(url) {
+      const title = computed(() => {
+        switch(JsonData.fid) {
+          case 2: return "步兵";
+          case 4: return "欧美";
+          case 5: return "动漫";
+          case 15: return "骑兵";
+          case 25: return "国产";
+          case 26: return "中文";
+          default: return "NONE";
+        }
+      })
+      
+      function loadJson() {
+        let url=`./fid${JsonData.fid}.json?`+Date.now()
         JsonData.load_json = false;
         fetch(url).then(resp => resp.json())
           .then(json => {
@@ -35,15 +49,40 @@
               json['list'][i]['date_class'] = dateClass(json['list'][i]['timestamp'])
             }
             JsonData.domain = json.domain;
+            JsonData.date = json.date;
             JsonData.list = json.list;
             JsonData.load_json = true;
           });
       }
       
-      loadJson('./data.json');
+      function refresh(){
+        JsonData.load_json = false;
+        fetch(`./clt/cl-get.py?${JsonData.fid}`)
+          .then(resp => resp.text())
+          .then(t => {
+            console.log(t);
+            loadJson();
+          });
+      }
+      
+      function load2(){
+        JsonData.fid=2;
+        loadJson();
+      }
+      
+      function load25(){
+        JsonData.fid=25;
+        loadJson();
+      }
+      
+      loadJson();
       
       return {
-        JsonData
+        JsonData,
+        title, 
+        refresh, 
+        load2, 
+        load25
       }
     }
   }).mount('#app')
@@ -52,6 +91,9 @@
 <div id="app">
   <h2 v-if="!JsonData.load_json">正在加载...</h2>
   <template v-if="JsonData.load_json">
+    <div class="tac" style="padding:5px;">
+      <h2> {{ title }} - {{ JsonData.date }} </h2>
+    </div>
     <div class="list t_one" onclick="oUrl(this)" v-for="item in JsonData.list">
       <a :href="JsonData.domain + item.url">{{ item.title }}</a>
       <br/>
@@ -72,6 +114,11 @@
       <div class="c"></div>
     </div>
   </template>
+  <div class="pages">
+    <a @click="load25" :class="JsonData.fid===25 ? 'gray' : '' " >国产</a>
+    <a @click="refresh">刷新</a>
+    <a @click="load2"  :class="JsonData.fid===2  ? 'gray' : '' " >步兵</a>
+  </div>
 </div>
 
 <body>

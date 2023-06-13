@@ -1,6 +1,7 @@
 # Build and Release Folders
 debug/
 release/
+__pycache__/
 
 # Other files and folders
 .settings/

@@ -137,3 +137,4 @@ claws 25 2 26 >> $RELEASE
 #sendmail |logger -t "【t66y】"
 # cat tt.html |cssq 'span.tar.s6.hv' -t
 # cat tt.html |cssq 'span[class=tar]' -t |awk '{printf("%d",$2)}'
+#curl "https://cl.3572y.xyz/thread0806.php?fid=25&page=1" -A 'Mobile' -b 'ismob=1'
