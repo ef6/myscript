@@ -6,6 +6,8 @@ from lxml import etree
 import datetime
 import json
 import os
+import shutil
+import fire
 
 WorkDir=os.path.dirname( os.path.abspath(__file__) )
 
@@ -16,7 +18,8 @@ Today=_today.strftime("%Y-%m-%d")
 #Yesterday =( _today + datetime.timedelta(-1) ).strftime("%Y-%m-%d")
 
 # 网络
-Domain="https://cl.6819y.xyz/"
+#Domain="https://cl.1538y.xyz/"
+Domain="https://cl.2980z.xyz/"
 Url="thread0806.php"
 ss=Req.Session()
 ss.headers = {
@@ -88,9 +91,7 @@ def dumpJson(out, data_struct):
         f.write(json.dumps(data_struct))
 
 def release(src,  dst):
-    if os.path.exists(dst):
-        os.remove(dst)
-    os.symlink(src, dst)
+    shutil.copy(src, dst)
     
 def claw(fid=25):
     data_struct={
@@ -98,7 +99,7 @@ def claw(fid=25):
         "date" : Today, 
         "list" : []
     }
-    for i in range(7):
+    for i in range(10):
         parse(downPage(fid, i+1), data_struct)
     sortData(data_struct)
     data_struct["list"]=data_struct["list"][:30]
@@ -119,8 +120,8 @@ def getNewDomain():
 def main(fid=25):
     OutFile=f"{WorkDir}/fid{fid}.{Today}.json"
     dumpJson(OutFile, claw(fid))
-    release(OutFile, f"/mnt/mmcblk0p4/www/fid{fid}.json")
+    release(OutFile, f"/root/www/fid{fid}.json")
 
 if __name__ == '__main__':
-    #main()
-    getNewDomain()
+    fire.Fire({'get':main,'domain':getNewDomain})
+    #getNewDomain()
