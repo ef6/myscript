@@ -9,8 +9,8 @@
 // @version      1.0.7
 // @updateURL    https://cdn.jsdelivr.net/gh/ef6/myscript@main/yh/rmdown2magnet.user.js
 // @icon         https://rmdown.com/favicon.ico
-// @include      http*://t66y.com/htm_data/*.html
-// @include      http*://t66y.com/htm_mob/*.html
+// @include      http*://*.com/htm_data/*.html
+// @include      http*://*.com/htm_mob/*.html
 // @grant        none
 // @run-at       document-end
 // ==/UserScript==
